@@ -24,7 +24,8 @@ dependencies:
 
   cloud_firestore: 0.8.2+3
   firebase_auth: 0.6.6
-  google_sign_in: 
+  google_sign_in:
+  flutter_facebook_login: 
   rxdart: 0.20.0
   flutter_signin_button: ^0.2.8
   font_awesome_flutter: ^8.4.0

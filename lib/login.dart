@@ -1,11 +1,9 @@
-import 'dart:math';
-
-import 'package:firebase_auth/firebase_auth.dart';
+  import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:token/signuppage.dart';
 
 final color1 =  Color(0xff000000);
@@ -30,6 +28,7 @@ class _LoginState extends State<Login> {
   String password;
 
   GoogleSignIn googleAuth = new GoogleSignIn(); 
+  FacebookLogin fbLogin = new FacebookLogin();
   @override
   Widget build(BuildContext context) {
    return new Scaffold(
@@ -110,7 +109,28 @@ class _LoginState extends State<Login> {
                       heroTag: "btn1",
                       backgroundColor: Colors.transparent,
                       onPressed: () {
-                        
+                        fbLogin.logInWithReadPermissions(['email','public_profile']).then(
+                          (result){
+                            switch(result.status) {
+                              case FacebookLoginStatus.loggedIn:
+                              FirebaseAuth.instance.signInWithFacebook(
+                                accessToken: result.accessToken.token
+                              ).then((signedInUser){
+                                print('Signed in as ${signedInUser.displayName}');
+                                Navigator.of(context).pushReplacementNamed('/homepage');
+                              }).catchError((e){print(e);});
+                              break;
+                              case FacebookLoginStatus.cancelledByUser:
+                                // TODO: Handle this case.
+                                break;
+                              case FacebookLoginStatus.error:
+                                // TODO: Handle this case.
+                                break;
+                            }
+
+                          }).catchError((e){
+                            print(e);
+                            });
                       },
                       child: new ConstrainedBox(
                         constraints: new BoxConstraints.expand(),
